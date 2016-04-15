@@ -1,0 +1,14 @@
+<root>
+  <log>
+    <path>../log/customer.log-</path>
+    <!--0 INFO-->
+    <!--1 WARING-->
+    <!--2 ERROR-->
+    <!--3 FATAL-->
+    <level>0</level>
+  </log>
+  <server>
+    <ip>192.168.180.123</ip>
+    <port>10001</port>
+  </server>
+</root>
