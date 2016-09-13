@@ -17,6 +17,8 @@ ServiceServer::~ServiceServer()
 void ServiceServer::start() {
 	server_.setNewConnCallback(this);
 	server_.Start();
+
+
 }
 
 void ServiceServer::onConnection(TcpConnection *pConn) {
