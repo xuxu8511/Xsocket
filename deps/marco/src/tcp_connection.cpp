@@ -182,6 +182,40 @@ void TcpConnection::sendInLoop(const std::string &message) {
 	}
 }
 
+void TcpConnection::Send(const char *message, size_t len) {
+    if (pLoop_->isInLoopThread()) {
+        sendInLoopEx(message, len);
+    } else {
+        pLoop_->runInLoop(std::bind(&TcpConnection::sendInLoopEx, this, message, len));
+    }   
+}
+
+void TcpConnection::sendInLoopEx(const char *message, size_t len) {
+    pLoop_->assertInLoopThread();
+    int n = 0;
+    if (outBuf_.Len() == 0) {
+        n = ::write(sockfd_, message, len);
+        if (n == -1) {
+            if (errno == EAGAIN || errno == EINTR) {
+                n = 0;
+            }   
+        }   
+        if (n == -1) {
+            LOG(INFO) << "write error handleClose conn";
+            handleClose();
+            return;
+        }   
+    }   
+
+    if (n >= 0 && n < len) {
+        outBuf_.Write(message+n, len-n);
+        outBuf_.HasWrite(len-n);
+        if (!pSocketChannel_->isWriting()) {
+            pSocketChannel_->enableWriting();
+        }   
+    }   
+}
+
 bool TcpConnection::handleClose() {
 //	LOG(INFO) << "TcpConnection::handleClose()";
 	pLoop_->assertInLoopThread();

@@ -22,6 +22,10 @@ namespace marco {
 
 			void Send(const std::string &message);
 			void sendInLoop(const std::string &message);
+			
+			void Send(const char *message, size_t len);
+            void sendInLoopEx(const char *message, size_t len);
+			
 			void setTcpConnectCallback(ITcpConnCallback *pCallback);
 			void setTcpCloseCallback(ICloseCallback *pCallback);
 

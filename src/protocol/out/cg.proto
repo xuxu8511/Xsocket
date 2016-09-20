@@ -1,0 +1,69 @@
+//client <---> gateway
+syntax = "proto2";
+package cg;
+
+
+enum RET {
+  RET_ERROR = 0;
+  RET_OK = 1;
+  RET_SERVER_MAINTAIN = 2; //服务器维护
+  RET_USER_NOT_EXIST = 3; //玩家不存在
+  RET_LOGIN_REPEAT = 4; //重复登陆
+  RET_USER_NAME_REPEAT = 5; //创建角色时,玩家名字重复
+}
+
+enum ID {
+  ID_C2S_KeepAlive = 10000;
+  ID_S2C_KeepAlive = 10001;
+  ID_C2S_Login = 10002;
+  ID_S2C_Login = 10003;
+  ID_C2S_Create = 10004;
+  ID_S2C_Create = 10005;
+  ID_C2S_GetEncodeKey = 10080;
+  ID_S2C_GetEncodeKey = 10081;
+}
+
+//心跳 10s
+message C2S_KeepAlive {
+}
+
+message S2C_KeepAlive {
+}
+
+//登陆
+message C2S_Login {
+  required string token = 1;
+  required uint64 sid = 2; //scene id
+  required string channel_id = 3;
+  required string device_id = 4;
+  optional uint32 version = 5;
+}
+
+message S2C_Login {
+  required uint32 ret = 1;
+  optional uint64 uid = 2;
+  optional uint32 sid = 3; //gateway client id
+  optional string yzuid = 4;
+  optional string platform_uid = 5;
+  optional uint32 version = 6;
+}
+
+//创建角色
+message C2S_Create {
+  required string name = 1;
+  required uint32 type = 2;
+}
+
+message S2C_Create {
+  required uint32 ret = 1;
+  optional uint64 uid = 2;
+  optional uint32 sid = 3; //gateway client id
+}
+
+//获取秘钥
+message C2S_GetEncodeKey {
+}
+
+message S2C_GetEncodeKey {
+  required int32 encode_key = 1;
+}
